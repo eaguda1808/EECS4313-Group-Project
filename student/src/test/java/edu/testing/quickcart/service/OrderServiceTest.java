@@ -116,6 +116,19 @@ class OrderServiceTest {
         verify(payment, times(1)).authorize(eq(CUSTOMER), amountOf("126.00"));
     }
 
+    // Status-only check for a declined payment (stock is NOT checked here; that is the R10 defect).
+    // Passes on the current code (no tag). Covers the PAYMENT_DECLINED return line.
+    @Test
+    @DisplayName("Payment declined -> status is PAYMENT_DECLINED")
+    void declinedPaymentReturnsDeclinedStatus() {
+        when(payment.authorize(anyString(), any())).thenReturn(false);
+
+        OrderResult result = order(2);
+
+        assertEquals(OrderResult.Status.PAYMENT_DECLINED, result.status());
+        verify(payment, times(1)).authorize(eq(CUSTOMER), amountOf("126.00"));
+    }
+
     // ---------- Boundary on the stock check ----------
 
     // EXPECTED TO FAIL (R9): spec, Ordering 1: "An order requesting exactly the available quantity is valid."

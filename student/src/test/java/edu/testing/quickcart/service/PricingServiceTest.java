@@ -176,6 +176,18 @@ class PricingServiceTest {
             assertMoney(expectedMerchandise, q.merchandise(), "merchandise");
         }
 
+        // Coupon valid 2026-11-10 .. 2026-11-20. Outside those dates it must not apply.
+        // Passes on the current code (no tag). Kills the isActive() -> return true mutant.
+        @ParameterizedTest(name = "order on {0} (outside dates) -> merchandise {1}")
+        @CsvSource({
+                "2026-11-09, 80.00",   // day before start
+                "2026-11-21, 80.00"    // day after end
+        })
+        void couponOutsideDatesGivesNoDiscount(LocalDate orderDate, String expectedMerchandise) {
+            OrderQuote q = quote(cart("80.00", 1), CustomerTier.STANDARD, SAVE10, "AB", orderDate);
+            assertMoney(expectedMerchandise, q.merchandise(), "merchandise");
+        }
+
         // Single-day coupon (start = end). EXPECTED TO FAIL on the day itself (same root cause as R2).
         @ParameterizedTest(name = "single-day coupon, order on {0} -> merchandise {1}")
         @Tag("defect")
