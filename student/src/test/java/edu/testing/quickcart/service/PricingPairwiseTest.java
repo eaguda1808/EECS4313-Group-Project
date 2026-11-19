@@ -2,6 +2,7 @@ package edu.testing.quickcart.service;
 
 import edu.testing.quickcart.model.*;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -36,6 +37,7 @@ class PricingPairwiseTest {
             LocalDate.of(2026, 11, 10), LocalDate.of(2026, 11, 20));
 
     @ParameterizedTest(name = "{index}: {0}, {1}, {2}, {3} -> total {10}")
+    @Tag("defect")
     @CsvSource({
             // tier,   coupon,        prov, ship, price,  coupon?, date,       merch,  ship, tax,   total
             "STANDARD, NONE,          ON,   PAID, 80.00,  false,   2026-11-15, 80.00,  8.99, 11.57, 100.56",

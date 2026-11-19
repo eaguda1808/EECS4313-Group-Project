@@ -45,6 +45,7 @@
           <targetClasses><param>edu.testing.quickcart.*</param></targetClasses>
           <targetTests><param>edu.testing.quickcart.*</param></targetTests>
           <threads>2</threads>
+          <excludedGroups><param>defect</param></excludedGroups>
         </configuration>
       </plugin>
     </plugins>

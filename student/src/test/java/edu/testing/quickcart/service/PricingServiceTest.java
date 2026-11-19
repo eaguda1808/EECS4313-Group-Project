@@ -1,10 +1,7 @@
 package edu.testing.quickcart.service;
 
 import edu.testing.quickcart.model.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -77,6 +74,7 @@ class PricingServiceTest {
         // Boundary: 9 (below), 10 (on), 11 (above). Unit price 10.00.
         // EXPECTED TO FAIL at quantity 10: spec says "10 or more", code uses > 10.
         @ParameterizedTest(name = "quantity {0} at $10.00 -> merchandise {1}")
+        @Tag("defect")
         @CsvSource({
                 "1,  10.00",    // nominal, no discount
                 "9,  90.00",    // just below the threshold
@@ -164,6 +162,7 @@ class PricingServiceTest {
         // Coupon valid 2026-11-10 .. 2026-11-20 INCLUSIVE. Merchandise 80.00, coupon $10.
         // EXPECTED TO FAIL on the start and end dates: code excludes both ends.
         @ParameterizedTest(name = "order on {0} -> merchandise {1}")
+        @Tag("defect")
         @CsvSource({
                 "2026-11-09, 80.00",   // day before start: not active
                 "2026-11-10, 70.00",   // ON start date      <-- R2 defect
@@ -179,6 +178,7 @@ class PricingServiceTest {
 
         // Single-day coupon (start = end). EXPECTED TO FAIL on the day itself (same root cause as R2).
         @ParameterizedTest(name = "single-day coupon, order on {0} -> merchandise {1}")
+        @Tag("defect")
         @CsvSource({
                 "2026-11-14, 80.00",
                 "2026-11-15, 70.00",   // the only valid day  <-- R2 defect
@@ -226,6 +226,7 @@ class PricingServiceTest {
 
         // EXPECTED TO FAIL at 100.00: spec says free at "$100.00 or more", code uses > 100.
         @ParameterizedTest(name = "merchandise {0} -> shipping {1}")
+        @Tag("defect")
         @CsvSource({
                 "99.99,  8.99",
                 "100.00, 0.00",   // ON the threshold  <-- R5 defect
@@ -251,6 +252,7 @@ class PricingServiceTest {
         // EXPECTED TO FAIL: spec taxes merchandise + shipping. 50.00 + 8.99 = 58.99 x 0.13 = 7.6687 -> 7.67.
         // Code taxes merchandise only (6.50).
         @Test
+        @Tag("defect")
         @DisplayName("Tax is charged on merchandise plus shipping (R6)")
         void taxIncludesShipping() {
             OrderQuote q = quote(cart("50.00", 1), CustomerTier.STANDARD, null, "ON", TODAY);

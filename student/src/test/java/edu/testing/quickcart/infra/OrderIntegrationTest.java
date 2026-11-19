@@ -4,6 +4,7 @@ import edu.testing.quickcart.model.*;
 import edu.testing.quickcart.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -90,6 +91,7 @@ class OrderIntegrationTest {
     // EXPECTED TO FAIL (R10): stock is reserved before payment, so after a decline the REAL inventory
     // is left reduced. Spec, Ordering 4-5.
     @Test
+    @Tag("defect")
     @DisplayName("Declined payment leaves the real inventory unchanged (R10)")
     void declinedPaymentDoesNotChangeRealInventory() {
         RecordingGateway gateway = new RecordingGateway(false);
@@ -112,6 +114,7 @@ class OrderIntegrationTest {
     // means the total quantity per product): the order is out of stock, payment is not attempted,
     // inventory must not change.
     @Test
+    @Tag("defect")
     @DisplayName("Same product on two lines exceeding stock -> OUT_OF_STOCK, stock unchanged (R11)")
     void sameProductOnTwoLinesIsCheckedAsATotal() {
         inventory = new InMemoryInventory(new HashMap<>(Map.of("P1", 10)));

@@ -4,6 +4,7 @@ import edu.testing.quickcart.infra.InMemoryInventory;
 import edu.testing.quickcart.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -101,6 +102,7 @@ class OrderServiceTest {
     // still uses up stock. Spec, Ordering 4-5: reserve "only after payment authorization succeeds";
     // "If payment is declined, inventory must remain unchanged."
     @Test
+    @Tag("defect")
     @DisplayName("D3: payment declined -> PAYMENT_DECLINED and stock unchanged (R10)")
     void declinedPaymentLeavesStockUnchanged() {
         when(payment.authorize(anyString(), any())).thenReturn(false);
@@ -119,6 +121,7 @@ class OrderServiceTest {
     // EXPECTED TO FAIL (R9): spec, Ordering 1: "An order requesting exactly the available quantity is valid."
     // Code uses available <= quantity, so it rejects the exact amount.
     @Test
+    @Tag("defect")
     @DisplayName("Boundary: ordering exactly the available stock is accepted (R9)")
     void orderingExactlyAvailableStockIsAccepted() {
         when(payment.authorize(anyString(), any())).thenReturn(true);
